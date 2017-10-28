@@ -1,10 +1,14 @@
 #! Python3 - PEP8 Style Guide -tt
-# Copyright 2017 - Vaibhav Chimalgi
 """ A squad of robotic rovers are to be landed by NASA on a plateau on
 Mars. This plateau, which is curiously rectangular, must be navigated
 by the rovers so that their on-board cameras can get a complete view of
 the surrounding terrain to send back to Earth.
-This module finds final co-ordinates and heading for each rover. """
+
+This module finds final co-ordinates and heading for each rover.
+
+Author : Vaibhav Chimalgi
+Created : October 2017
+"""
 
 
 import sys
@@ -15,27 +19,24 @@ import re
 dir_ = ['N', 'E', 'S', 'W']
 
 
-def turnLeft(pos):
+def turnLeft(cur_dir):
     # Find the position of current direction from dir_
-    i = dir_.index(pos[4])
-    pos[4] = dir_[i-1]  # Change the direction after a left turn
+    i = dir_.index(cur_dir)
+    return dir_[i-1]  # Return the direction after a left turn
 
 
-def turnRight(pos):
+def turnRight(cur_dir):
     # Find the position of current direction from dir_
-    i = dir_.index(pos[4])
-    pos[4] = dir_[(i+1) % 4]  # Change the direction after a right turn
+    i = dir_.index(cur_dir)
+    return dir_[(i+1) % 4]  # Return the direction after a right turn
 
 
 def move(pos, toprightX, toprightY):
-    try:
-        if(pos[0] < 0 or pos[2] < 0 or
+    if(pos[0] < 0 or pos[2] < 0 or
            pos[0] > toprightX or
            pos[2] > toprightY):
-                raise ValueError('Rover co-ordinates on edge !!')
-    except ValueError as err:  # Edge case exception handling
-        print(err.args)
-        sys.exit(1)
+                raise ValueError('Rover co-ordinates are on the '
+                                 'edge !!. Cannot move off the edge')
     else:
         # Change the coordinate according to the direction
         if(pos[4] == 'N'):
@@ -51,15 +52,19 @@ def move(pos, toprightX, toprightY):
 def rover(pos, nav_inst_list, toprightX, toprightY):
     # For each instruction call respective methods
     while(nav_inst_list):
-        inst = nav_inst_list.pop(0)
-        if(inst == 'L'):
-            turnLeft(pos)
-        elif(inst == 'R'):
-            turnRight(pos)
-        elif(inst == 'M'):
-            move(pos, int(toprightX), int(toprightY))
+        try:
+            inst = nav_inst_list.pop(0)
+            if(inst == 'L'):
+                pos[4] = turnLeft(pos[4])
+            elif(inst == 'R'):
+                pos[4] = turnRight(pos[4])
+            elif(inst == 'M'):
+                move(pos, int(toprightX), int(toprightY))
+        except ValueError as err:
+            print(err.args)
+            return
     res = ''.join(str(e) for e in pos)
-    print(res)  # Print the final coordinate
+    return res  # return the final coordinate
 
 
 def main():
@@ -73,10 +78,12 @@ def main():
         # Setting the top-right coordinates
         toprightX = f.readline(1)
         toprightY = f.readline(2)
+        # Checking for input format - Top Right Co-ordinates
         try:
             m = re.match("(^\d\s\d)", toprightX+toprightY)
             if not m:
-                raise ValueError('The top line should be coordinates')
+                raise ValueError('The top line should have'
+                                 'integer coordinates')
         except ValueError as err:
             print(err.args)
         else:
@@ -90,27 +97,35 @@ def main():
                 # Converting strings into lists
                 pos = list(all_inst[i])
                 nav_inst_list = list(all_inst[i+1])
+                # Checking for input format - Starting Co-ordinate
                 try:
                     m = re.match("(^\d\d[N,E,S,W])", all_inst[i][0]
                                  + all_inst[i][2]
                                  + all_inst[i][4])
                     if not m:
-                        raise ValueError('The initial co-ordinates'
-                                         'error')
+                        raise ValueError('The start co-ordinates'
+                                         'of the rover must be'
+                                         'in the format 2 3 E')
                 except ValueError as err:
                     print(err.args)
+                # Checking for input format - Rover Instructions
                 try:
                     m = re.match("(^[L,R,M]+)", all_inst[i+1])
                     if(m.group() != all_inst[i+1]):
-                        raise ValueError('The instructions error')
+                        raise ValueError('The instructions must'
+                                         'contain only one of these'
+                                         'characters (L,R,M)')
                 except ValueError as err:
                     print(err.args)
                 else:
-                    # Converting the coordinates in pos to integers
+                    # Converting the co-ordinates in pos to integers
                     pos[0] = int(pos[0])
                     pos[2] = int(pos[2])
-                    # Calling the rover for execution
-                    rover(pos, nav_inst_list, toprightY, toprightY)
+                    # Calling the rover method for execution
+                    res = rover(pos, nav_inst_list,
+                                toprightY, toprightY)
+                    print(res)
+
 
 # Standard boilerplate to call the main() function to begin
 # the program
