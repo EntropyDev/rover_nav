@@ -7,12 +7,12 @@ the surrounding terrain to send back to Earth.
 This module finds final co-ordinates and heading for each rover.
 
 Author : Vaibhav Chimalgi
-Created : October 2017
-"""
+Created : October 2017 """
 
 
 import sys
 import re
+import os
 
 
 # A list of directions in clockwise order
@@ -41,12 +41,16 @@ def move(pos, toprightX, toprightY):
         # Change the coordinate according to the direction
         if(pos[4] == 'N'):
             pos[2] += 1
+            return pos[2]
         elif(pos[4] == 'E'):
             pos[0] += 1
+            return pos[0]
         elif(pos[4] == 'S'):
             pos[2] -= 1
+            return pos[2]
         elif(pos[4] == 'W'):
             pos[0] -= 1
+            return pos[0]
 
 
 def rover(pos, nav_inst_list, toprightX, toprightY):
@@ -67,9 +71,9 @@ def rover(pos, nav_inst_list, toprightX, toprightY):
     return res  # return the final coordinate
 
 
-def main():
+def main(filename):
     # Get input from file
-    filename = sys.argv[1]
+    
     try:
         f = open(filename, 'rU')
     except FileNotFoundError:
@@ -82,7 +86,7 @@ def main():
         try:
             m = re.match("(^\d\s\d)", toprightX+toprightY)
             if not m:
-                raise ValueError('The top line should have'
+                raise ValueError('The top line should have '
                                  'integer coordinates')
         except ValueError as err:
             print(err.args)
@@ -103,8 +107,8 @@ def main():
                                  + all_inst[i][2]
                                  + all_inst[i][4])
                     if not m:
-                        raise ValueError('The start co-ordinates'
-                                         'of the rover must be'
+                        raise ValueError('The start co-ordinates '
+                                         'of the rover must be '
                                          'in the format 2 3 E')
                 except ValueError as err:
                     print(err.args)
@@ -112,8 +116,8 @@ def main():
                 try:
                     m = re.match("(^[L,R,M]+)", all_inst[i+1])
                     if(m.group() != all_inst[i+1]):
-                        raise ValueError('The instructions must'
-                                         'contain only one of these'
+                        raise ValueError('The instructions must '
+                                         'contain only one of these '
                                          'characters (L,R,M)')
                 except ValueError as err:
                     print(err.args)
@@ -130,4 +134,5 @@ def main():
 # Standard boilerplate to call the main() function to begin
 # the program
 if __name__ == '__main__':
-    main()
+    filename = sys.argv[1]
+    main(filename)
