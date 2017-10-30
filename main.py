@@ -32,25 +32,22 @@ def turnRight(cur_dir):
 
 
 def move(pos, toprightX, toprightY):
-    if(pos[0] < 0 or pos[2] < 0 or
-           pos[0] > toprightX or
-           pos[2] > toprightY):
-                raise ValueError('Rover co-ordinates are on the '
-                                 'edge !!. Cannot move off the edge')
+    # Change the coordinate according to the direction
+    if(pos[4] == 'N' and pos[2] < toprightY):
+        pos[2] += 1
+        return pos[2]
+    elif(pos[4] == 'E' and pos[0] < toprightX):
+        pos[0] += 1
+        return pos[0]
+    elif(pos[4] == 'S' and pos[2] > 0):
+        pos[2] -= 1
+        return pos[2]
+    elif(pos[4] == 'W' and pos[0] > 0):
+        pos[0] -= 1
+        return pos[0]
     else:
-        # Change the coordinate according to the direction
-        if(pos[4] == 'N'):
-            pos[2] += 1
-            return pos[2]
-        elif(pos[4] == 'E'):
-            pos[0] += 1
-            return pos[0]
-        elif(pos[4] == 'S'):
-            pos[2] -= 1
-            return pos[2]
-        elif(pos[4] == 'W'):
-            pos[0] -= 1
-            return pos[0]
+        raise ValueError('Rover co-ordinates are on the '
+                         'edge !!. Cannot move off the edge')
 
 
 def rover(pos, nav_inst_list, toprightX, toprightY):
