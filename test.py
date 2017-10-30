@@ -51,8 +51,8 @@ class TestRover(unittest.TestCase):
                      7, 8) == '4 3 N'
 
     def test_rover_inst(self):
-        self.assertTrue(rover([2, ' ', 4, ' ', 'N'],
-                              ['M', 'M', 'M'], 3, 5), None)
+        assert rover([2, ' ', 4, ' ', 'N'],
+                     ['M', 'M', 'M'], 3, 5) is None
 
 
 class TestMain(unittest.TestCase):
