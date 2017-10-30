@@ -65,23 +65,22 @@ def rover(pos, nav_inst_list, toprightX, toprightY):
             print(err.args)
             return
     res = ''.join(str(e) for e in pos)
-    return res  # return the final coordinate
+    return res  # return the final co-ordinates
 
 
 def main(filename):
     # Get input from file
-    
     try:
         f = open(filename, 'rU')
     except FileNotFoundError:
         print('File not found Error.')
     else:
-        # Setting the top-right coordinates
+        # Setting the top-right co-ordinates
         toprightX = f.readline(1)
         toprightY = f.readline(2)
         # Checking for input format - Top Right Co-ordinates
         try:
-            m = re.match("(^\d\s\d)", toprightX+toprightY)
+            m = re.match("(^\d\s\d)", toprightX + toprightY)
             if not m:
                 raise ValueError('The top line should have '
                                  'integer coordinates')
