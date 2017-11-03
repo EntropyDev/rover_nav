@@ -71,7 +71,7 @@ def rover(pos, nav_inst_list, toprightX, toprightY):
 def main(filename):
     # Get input from file
     try:
-        f = open(filename, 'rU')
+        f = open(os.getcwd()+"/"+filename, 'rU')
     except FileNotFoundError:
         print('File not found Error.')
     else:
