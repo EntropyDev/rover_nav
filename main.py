@@ -92,7 +92,7 @@ def main(filename):
                 txt = f.read()
             f.close()
             all_inst = txt.split('\n')
-
+            all_inst = list(filter(None, all_inst))
             for i in range(0, len(all_inst), 2):
                 # Converting strings into lists
                 pos = list(all_inst[i])
